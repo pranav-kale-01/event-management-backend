@@ -31,19 +31,10 @@ This repository contains the backend code for the Campus Navigator application, 
 3. Start the server:
 
   ```bash
-    npm run start
+    node server.js
   ```
 
 This will start the server on http://localhost:3001 (or any port specified in your environment variables).
-
-
-You can also run the server in development mode with:
-
-  ```bash
-    npm run dev
-  ```
-
-This will allow you to make changes and see them reflected immediately without restarting the server.
 
 ## API Endpoints
 
