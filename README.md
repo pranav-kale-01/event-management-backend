@@ -12,8 +12,8 @@ This repository contains the backend code for the Campus Navigator application, 
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd <repository-name>
+   git clone https://github.com/pranav-kale-01/event-management-backend
+   cd event-management-backend
    ```
 
 2. Install the dependencies:
@@ -24,7 +24,7 @@ This repository contains the backend code for the Campus Navigator application, 
 
 2. Set up your environment variables in a .env file:
     
-    Paste the .env file in the location as shown in the below image 
+    Paste the .env file in the location as shown in the image below 
     
     ![image](https://github.com/user-attachments/assets/cb0dd432-717b-417d-9cf6-2c848eb337be)
     
