@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const router = express.Router();
 require("dotenv").config();
 const User = require("../models/user");
+const authenticateToken = require("../middleware/authMiddleware");
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 const EMAIL_USER = process.env.EMAIL_USER; // Your email for Nodemailer
@@ -20,6 +21,41 @@ const transporter = nodemailer.createTransport({
     user: EMAIL_USER,
     pass: EMAIL_PASS,
   },
+});
+
+router.get("/user/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json(user);
+});
+
+// Add event to liked events
+router.post("/edit_user/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { likedEvents, registeredEvents, _id, email, password, userType }=req.body;
+
+    // Update the event
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { likedEvents, registeredEvents, _id, email, password, userType },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.json({ message: "Event liked successfully", event: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Endpoint to send OTP
@@ -83,7 +119,11 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create new user
-    const user = new User({ email, password: hashedPassword, userType: userType });
+    const user = new User({
+      email,
+      password: hashedPassword,
+      userType: userType,
+    });
     await user.save();
 
     // Create JWT token
@@ -95,7 +135,7 @@ router.post("/register", async (req, res) => {
 
     res.status(201).json({ message: "User created successfully", token });
   } catch (error) {
-    console.log( error );
+    console.log(error);
     res
       .status(500)
       .json({ message: "Error creating user", error: error.message });
@@ -107,8 +147,7 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email });
+    var user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "User Not Found" });
 
     // Verify password
@@ -123,7 +162,11 @@ router.post("/login", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    res.json({ message: "Login successful", token, userType: user.userType });
+    user = await User.findById(user._id)
+      .populate("likedEvents", "_id")
+      .populate("registeredEvents");
+
+    res.json({ message: "Login successful", token, user: user });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error: error.message });
   }
