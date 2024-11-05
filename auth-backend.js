@@ -1,6 +1,3 @@
-// Required dependencies:
-// npm install express bcryptjs jsonwebtoken cors dotenv
-
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
