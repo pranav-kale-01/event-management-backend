@@ -31,7 +31,7 @@ This repository contains the backend code for the Campus Navigator application, 
 3. Start the server:
 
   ```bash
-    node server.js
+    node index.js
   ```
 
 This will start the server on http://localhost:3001 (or any port specified in your environment variables).
