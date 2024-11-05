@@ -11,9 +11,6 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 const EMAIL_USER = process.env.EMAIL_USER; // Your email for Nodemailer
 const EMAIL_PASS = process.env.EMAIL_PASS; // Your email password for Nodemailer
 
-// Temporary storage for OTPs (consider using a database or cache in production)
-const otpStorage = {};
-
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",

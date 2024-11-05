@@ -3,6 +3,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
+const chatRoutes = require('./routes/chat');
 const protectedRoutes = require('./routes/protected');
 require('dotenv').config();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api', protectedRoutes);
+app.use('/api/chats', chatRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
