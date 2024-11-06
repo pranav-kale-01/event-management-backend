@@ -1,3 +1,2 @@
-const app = require("../index"); // Adjust the path based on your file structure
-
-module.exports = app;
+import app from "../index"; 
+export default app;
