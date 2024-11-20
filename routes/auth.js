@@ -11,6 +11,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 const EMAIL_USER = process.env.EMAIL_USER; // Your email for Nodemailer
 const EMAIL_PASS = process.env.EMAIL_PASS; // Your email password for Nodemailer
 
+// Save OTP in temporary storage
+const otpStorage = {};
+
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -35,7 +38,7 @@ router.get("/user/:id", authenticateToken, async (req, res) => {
 router.post("/edit_user/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { likedEvents, registeredEvents, _id, email, password, userType }=req.body;
+    const { likedEvents, registeredEvents, _id, email, password, userType } = req.body;
 
     // Update the event
     const updatedUser = await User.findByIdAndUpdate(
@@ -66,10 +69,6 @@ router.post("/otp/sendOtp", async (req, res) => {
 
   // Generate a random 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-  // Save OTP in temporary storage
-  const otpStorage = {};
-  
   otpStorage[email] = otp;
 
   // Send OTP email
@@ -95,7 +94,7 @@ router.post("/otp/verifyOtp", (req, res) => {
   const { email, otp } = req.body;
 
   // Verify OTP
-  if (otpStorage[email] && otpStorage[email] === otp) {
+  if (otpStorage && otpStorage[email] && otpStorage[email] === otp) {
     delete otpStorage[email]; // Remove OTP once verified
     res.status(200).json({ message: "OTP verified successfully" });
   } else {
@@ -132,7 +131,12 @@ router.post("/register", async (req, res) => {
       { expiresIn: "24h" }
     );
 
-    res.status(201).json({ message: "User created successfully", token });
+    const userInfo = {
+      token: token, 
+      user: user
+    }
+
+    res.status(201).json({ message: "User created successfully", userInfo });
   } catch (error) {
     console.log(error);
     res
