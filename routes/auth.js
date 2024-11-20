@@ -68,6 +68,8 @@ router.post("/otp/sendOtp", async (req, res) => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   // Save OTP in temporary storage
+  const otpStorage = {};
+  
   otpStorage[email] = otp;
 
   // Send OTP email
